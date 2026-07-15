@@ -1,0 +1,23 @@
+{
+  "cxxNamespace": ["nitrorealtimeaudio"],
+  "ios": {
+    "iosModuleName": "NitroRealtimeAudio"
+  },
+  "android": {
+    "androidNamespace": ["nitrorealtimeaudio"],
+    "androidCxxLibName": "nitrorealtimeaudio"
+  },
+  "autolinking": {
+    "NitroRealtimeAudio": {
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "NitroRealtimeAudio"
+      },
+      "android": {
+        "language": "kotlin",
+        "implementationClassName": "NitroRealtimeAudio"
+      }
+    }
+  },
+  "ignorePaths": ["node_modules"]
+}
