@@ -2,12 +2,12 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-nitro-realtime-audio": ["./src/index"]
+      "@mindinventory/react-native-nitro-realtime-audio": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "customConditions": [
-      "react-native-nitro-realtime-audio-source",
+      "@mindinventory/react-native-nitro-realtime-audio-source",
       "react-native-strict-api"
     ],
     "esModuleInterop": true,

@@ -1,12 +1,12 @@
 {
-  "name": "react-native-nitro-realtime-audio",
-  "version": "0.1.0",
+  "name": "@mindinventory/react-native-nitro-realtime-audio",
+  "version": "1.0.0",
   "description": "A high-performance audio recording library for React Native powered by Nitro Modules.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
     ".": {
-      "react-native-nitro-realtime-audio-source": "./src/index.tsx",
+      "@mindinventory/react-native-nitro-realtime-audio-source": "./src/index.tsx",
       "types": "./lib/typescript/src/index.d.ts",
       "default": "./lib/module/index.js"
     },
@@ -37,7 +37,7 @@
     "example": "yarn workspace react-native-nitro-realtime-audio-example",
     "clean": "del-cli lib",
     "prepare": "bob build",
-    "yarn nitrogen": "nitrogen",
+    "nitrogen": "nitrogen",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "test": "jest",
@@ -50,14 +50,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maulikmi/react-native-nitro-realtime-audio.git"
+    "url": "https://github.com/mindinventory/react-native-nitro-realtime-audio.git"
   },
   "author": "Maulik Togadiya <maulik.togadiya@mindinventory.com> (https://github.com/maulikmi)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/maulikmi/react-native-nitro-realtime-audio/issues"
+    "url": "https://github.com/mindinventory/react-native-nitro-realtime-audio/issues"
   },
-  "homepage": "https://github.com/maulikmi/react-native-nitro-realtime-audio#readme",
+  "homepage": "https://github.com/mindinventory/react-native-nitro-realtime-audio",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },

@@ -76,42 +76,38 @@ This provides:
 
 ---
 
-# Installation
+## Installation
 
-## Expo
-
-```bash
-npx expo install react-native-nitro-realtime-audio react-native-nitro-modules
-```
-
-Generate native projects if required:
+Install the library together with its required peer dependency:
 
 ```bash
-npx expo prebuild
-```
-
-Then create an Expo Development Build or build with EAS.
-
----
-
-## React Native CLI
-
-```bash
-npm install react-native-nitro-realtime-audio react-native-nitro-modules
+npm install @mindinventory/react-native-nitro-realtime-audio react-native-nitro-modules
 ```
 
 or
 
 ```bash
-yarn add react-native-nitro-realtime-audio react-native-nitro-modules
+yarn add @mindinventory/react-native-nitro-realtime-audio react-native-nitro-modules
 ```
+
+or for Expo:
+
+```bash
+npx expo install @mindinventory/react-native-nitro-realtime-audio react-native-nitro-modules
+```
+
+> **Note**
+>
+> `react-native-nitro-modules` is a required peer dependency.
+
+````
 
 Install iOS dependencies:
 
 ```bash
 cd ios
 pod install
-```
+````
 
 > **Note**
 >
@@ -288,7 +284,7 @@ import {
   stopRecording,
   onAudioChunk,
   isRecording,
-} from 'react-native-nitro-realtime-audio';
+} from '@mindinventory/react-native-nitro-realtime-audio';
 
 export default function AudioRecorder() {
   const [recording, setRecording] = useState(false);

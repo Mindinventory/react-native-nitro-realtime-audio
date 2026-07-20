@@ -21,7 +21,7 @@ import {
   startRecording,
   stopRecording,
   onAudioChunk,
-} from 'react-native-nitro-realtime-audio';
+} from '@mindinventory/react-native-nitro-realtime-audio';
 import {
   type ChunkStats,
   pcmChunksToWav,

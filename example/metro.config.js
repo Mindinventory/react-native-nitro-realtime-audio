@@ -13,7 +13,7 @@ const root = path.resolve(__dirname, '..');
 const config = withMetroConfig(getDefaultConfig(__dirname), {
   root,
   dirname: __dirname,
-  conditions: ['react-native-nitro-realtime-audio-source'],
+  conditions: ['@mindinventory/react-native-nitro-realtime-audio-source'],
 });
 
 module.exports = config;
