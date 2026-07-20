@@ -13,7 +13,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "nitrorealtimeaudio.example"
+      "bundleIdentifier": "nitrorealtimeaudio.example",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Allow this app to access your microphone for real-time audio."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -26,6 +29,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+        }
+      ]
+    ]
   }
 }

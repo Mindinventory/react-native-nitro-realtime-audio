@@ -12,8 +12,10 @@
     "build:web": "expo export --platform web"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~55.0.11",
-    "expo": "~55.0.27",
+    "@expo/metro-runtime": "~55.0.12",
+    "expo": "~55.0.28",
+    "expo-audio": "~55.0.16",
+    "expo-file-system": "~55.0.24",
     "expo-status-bar": "~55.0.6",
     "react": "19.2.0",
     "react-dom": "19.2.0",
@@ -23,7 +25,7 @@
   },
   "private": true,
   "devDependencies": {
-    "expo-dev-client": "~55.0.36",
+    "expo-dev-client": "~55.0.37",
     "react-native-builder-bob": "^0.43.0",
     "react-native-monorepo-config": "^0.4.0"
   }

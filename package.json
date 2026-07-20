@@ -37,7 +37,7 @@
     "example": "yarn workspace react-native-nitro-realtime-audio-example",
     "clean": "del-cli lib",
     "prepare": "bob build",
-    "nitrogen": "nitrogen",
+    "yarn nitrogen": "nitrogen",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "test": "jest",
