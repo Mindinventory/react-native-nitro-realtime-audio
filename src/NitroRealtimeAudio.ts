@@ -2,6 +2,7 @@ import { NitroModules } from 'react-native-nitro-modules';
 import { NativeModules } from 'react-native';
 import type {
   AudioRecordingConfig,
+  AudioPlaybackConfig,
   MicrophonePermissionStatus,
   NitroRealtimeAudio as NitroRealtimeAudioSpec,
 } from './NitroRealtimeAudio.nitro';
@@ -12,41 +13,58 @@ if (!lifecycleModule) {
   console.warn('NitroRealtimeAudioLifecycle native module is not available.');
 }
 
-const NitroRealtimeAudioHybridObject =
+export const NitroRealtimeAudio =
   NitroModules.createHybridObject<NitroRealtimeAudioSpec>('NitroRealtimeAudio');
 
 export function getPlatformName(): string {
-  return NitroRealtimeAudioHybridObject.getPlatformName();
+  return NitroRealtimeAudio.getPlatformName();
 }
 
 export function getNativeSampleRate(): number {
-  return NitroRealtimeAudioHybridObject.getNativeSampleRate();
+  return NitroRealtimeAudio.getNativeSampleRate();
 }
 
 export function getMicrophonePermissionStatus(): MicrophonePermissionStatus {
-  return NitroRealtimeAudioHybridObject.getMicrophonePermissionStatus();
+  return NitroRealtimeAudio.getMicrophonePermissionStatus();
 }
 
 export function requestMicrophonePermission(): Promise<MicrophonePermissionStatus> {
-  return NitroRealtimeAudioHybridObject.requestMicrophonePermission();
+  return NitroRealtimeAudio.requestMicrophonePermission();
 }
 
 export function startRecording(config: AudioRecordingConfig): void {
-  NitroRealtimeAudioHybridObject.startRecording(config);
+  NitroRealtimeAudio.startRecording(config);
 }
 
 export function stopRecording(): void {
-  NitroRealtimeAudioHybridObject.stopRecording();
+  NitroRealtimeAudio.stopRecording();
 }
 
 export function isRecording(): boolean {
-  return NitroRealtimeAudioHybridObject.isRecording();
+  return NitroRealtimeAudio.isRecording();
 }
 
 export function getCapturedBufferCount(): number {
-  return NitroRealtimeAudioHybridObject.getCapturedBufferCount();
+  return NitroRealtimeAudio.getCapturedBufferCount();
 }
 
 export function onAudioChunk(callback: (buffer: ArrayBuffer) => void): void {
-  NitroRealtimeAudioHybridObject.onAudioChunk(callback);
+  NitroRealtimeAudio.onAudioChunk(callback);
+}
+
+// Audio Player
+export function initializePlayer(config: AudioPlaybackConfig): void {
+  NitroRealtimeAudio.initializePlayer(config);
+}
+
+export function playChunk(buffer: ArrayBuffer): void {
+  NitroRealtimeAudio.playChunk(buffer);
+}
+
+export function stopPlayback(): void {
+  NitroRealtimeAudio.stopPlayback();
+}
+
+export function releasePlayer(): void {
+  NitroRealtimeAudio.releasePlayer();
 }

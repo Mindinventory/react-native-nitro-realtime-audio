@@ -8,6 +8,12 @@ export interface AudioRecordingConfig {
   chunkDurationMs: number;
 }
 
+export interface AudioPlaybackConfig {
+  sampleRate: number;
+  channels: number;
+  bufferSize: number;
+}
+
 export interface NitroRealtimeAudio extends HybridObject<{
   ios: 'swift';
   android: 'kotlin';
@@ -16,9 +22,15 @@ export interface NitroRealtimeAudio extends HybridObject<{
   getNativeSampleRate(): number;
   getMicrophonePermissionStatus(): MicrophonePermissionStatus;
   requestMicrophonePermission(): Promise<MicrophonePermissionStatus>;
+  // Recorder
   startRecording(config: AudioRecordingConfig): void;
   stopRecording(): void;
   isRecording(): boolean;
   getCapturedBufferCount(): number;
   onAudioChunk(callback: (buffer: ArrayBuffer) => void): void;
+  // Player
+  initializePlayer(config: AudioPlaybackConfig): void;
+  playChunk(buffer: ArrayBuffer): void;
+  stopPlayback(): void;
+  releasePlayer(): void;
 }

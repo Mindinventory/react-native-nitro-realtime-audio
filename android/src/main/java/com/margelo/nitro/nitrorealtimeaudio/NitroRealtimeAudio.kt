@@ -14,8 +14,10 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.concurrent.thread
 import kotlin.coroutines.resume
 import com.margelo.nitro.nitrorealtimeaudio.audio.AudioConfig
+import com.margelo.nitro.nitrorealtimeaudio.audio.AudioPlayerConfig
 import com.margelo.nitro.nitrorealtimeaudio.audio.AudioRecorder
 import com.margelo.nitro.nitrorealtimeaudio.audio.AudioChunk
+import com.margelo.nitro.nitrorealtimeaudio.audio.AudioPlayer
 import com.margelo.nitro.core.ArrayBuffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -25,6 +27,7 @@ class NitroRealtimeAudio : HybridNitroRealtimeAudioSpec() {
 
 
   private val recorder = AudioRecorder()
+  private val audioPlayer = AudioPlayer()
   private var audioChunkCallback:((ArrayBuffer) -> Unit)? = null
 
   init {
@@ -122,6 +125,26 @@ class NitroRealtimeAudio : HybridNitroRealtimeAudioSpec() {
     byteBuffer.flip()
 
     callback(ArrayBuffer.wrap(byteBuffer))
-}
+  }
 
+  override fun initializePlayer(config: AudioPlaybackConfig) {
+    audioPlayer.initialize(AudioPlayerConfig(
+      sampleRate = config.sampleRate.toInt(),
+      channels = config.channels.toInt(),
+      bufferSize = config.bufferSize.toInt()
+    ))
+  }
+
+  override fun playChunk(buffer: ArrayBuffer) {
+    audioPlayer.playChunk(buffer.toByteArray())
+  }
+
+  override fun stopPlayback() {
+    audioPlayer.stopPlayback()
+  }
+
+  override fun releasePlayer() {
+    audioPlayer.releasePlayer()
+  }
+  
 }

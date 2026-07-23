@@ -14,8 +14,13 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.concurrent.thread
 import kotlin.coroutines.resume
 import com.margelo.nitro.nitrorealtimeaudio.audio.AudioConfig
+import android.util.Log
 
 internal class AudioRecorder {
+
+  private companion object {
+        const val TAG = "AudioRecorder"
+  }
 
   private var recording = false
   private var audioRecord: AudioRecord? = null

@@ -21,6 +21,9 @@ import {
   startRecording,
   stopRecording,
   onAudioChunk,
+  PCMStreamer,
+  NitroRealtimeAudio,
+  initializePlayer,
 } from '@mindinventory/react-native-nitro-realtime-audio';
 import {
   type ChunkStats,
@@ -29,6 +32,9 @@ import {
   calculateChunkStats,
   getWaveformData,
 } from './audioUtils';
+import { NETWORK_PROFILES } from './simulators/NetworkProfiles';
+import { PCMNetworkSimulator } from './simulators/PCMNetworkSimulator';
+import type { StreamingOptions } from './simulators/types';
 
 interface RecordingSummary {
   durationSec: number;
@@ -41,7 +47,7 @@ interface RecordingSummary {
 
 const RECORDING_SAMPLE_RATE = 24000;
 const RECORDING_CHANNELS = 1;
-const RECORDING_CHUNK_DURATION = 100;
+const RECORDING_CHUNK_DURATION = 20;
 
 export default function App() {
   const platformName = getPlatformName();
@@ -67,6 +73,10 @@ export default function App() {
   const chunksRef = useRef<Uint8Array[]>([]);
   const [wavUri, setWavUri] = useState<string | null>(null);
 
+  const [pcmPlaying, setPcmPlaying] = useState(false);
+  const pcmStreamerRef = useRef<PCMStreamer | null>(null);
+  const pcmIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   // Refs for tracking overall recording stats
   const peakSampleRef = useRef(0);
   const accumulatedSumSqRef = useRef(0);
@@ -76,6 +86,15 @@ export default function App() {
   const player = useAudioPlayer(wavUri);
   const status = useAudioPlayerStatus(player);
   const playing = status.playing;
+
+  useEffect(() => {
+    return () => {
+      if (pcmIntervalRef.current) {
+        clearInterval(pcmIntervalRef.current);
+      }
+      pcmStreamerRef.current?.stop();
+    };
+  }, []);
 
   useEffect(() => {
     // Register the onAudioChunk callback
@@ -124,6 +143,11 @@ export default function App() {
 
   const handleStartRecording = () => {
     try {
+      handleStopPCM();
+      if (playing) {
+        player.pause();
+      }
+
       chunksRef.current = [];
       setWavUri(null);
       setSummary(null);
@@ -213,6 +237,7 @@ export default function App() {
 
   const handlePlayPause = async () => {
     if (wavUri) {
+      handleStopPCM();
       if (playing) {
         player.pause();
       } else {
@@ -224,6 +249,101 @@ export default function App() {
         }
         player.play();
       }
+    }
+  };
+
+  const handlePlayPCM = () => {
+    if (chunksRef.current.length === 0) return;
+
+    if (!pcmStreamerRef.current) {
+      pcmStreamerRef.current = new PCMStreamer(NitroRealtimeAudio, {
+        sampleRate: RECORDING_SAMPLE_RATE,
+        channels: RECORDING_CHANNELS,
+        chunkDurationMs: RECORDING_CHUNK_DURATION,
+      });
+    }
+
+    if (pcmIntervalRef.current) {
+      clearInterval(pcmIntervalRef.current);
+      pcmIntervalRef.current = null;
+    }
+
+    initializePlayer({
+      sampleRate: RECORDING_SAMPLE_RATE,
+      channels: RECORDING_CHANNELS,
+      bufferSize: 4096,
+    });
+
+    setPcmPlaying(true);
+
+    // const sine = generateSineWavePCM16();
+
+    // // split to 960-byte chunks
+
+    // const chunks: Uint8Array[] = [];
+    // for (let i = 0; i < sine.byteLength; i += 960) {
+    //   chunks.push(new Uint8Array(sine.slice(i, i + 960)));
+    // }
+
+    // console.log('chunks', chunks.length);
+
+    // for (const chunk of chunks) {
+    //   pcmStreamerRef.current.enqueue(chunk.slice().buffer);
+    // }
+    // pcmStreamerRef.current.finish();
+
+    // console.log('chunks', chunksRef.current.length);
+
+    // let total = 0;
+
+    // for (const chunk of chunksRef.current) {
+    //   total += chunk.byteLength;
+    // }
+
+    // console.log('total', total);
+    let totalBytes = 0;
+    console.log('Recorded chunks:', chunksRef.current.length);
+
+    const simulator = new PCMNetworkSimulator(
+      NETWORK_PROFILES.jitter as StreamingOptions
+    );
+
+    simulator.start(chunksRef.current, (chunk) => {
+      pcmStreamerRef.current?.enqueue(chunk.slice().buffer);
+    });
+
+    // for (const chunk of chunksRef.current) {
+    //   totalBytes += chunk.byteLength;
+    //   pcmStreamerRef.current.enqueue(chunk.slice().buffer);
+    // }
+    // console.log('Total recorded bytes:', totalBytes);
+    pcmStreamerRef.current.finish();
+
+    const durationMs =
+      (totalBytes / (RECORDING_SAMPLE_RATE * RECORDING_CHANNELS * 2)) * 1000;
+
+    pcmIntervalRef.current = setTimeout(() => {
+      handleStopPCM();
+    }, durationMs + 300); // 300ms padding to let final buffer finish playing
+  };
+
+  const handleStopPCM = () => {
+    if (pcmIntervalRef.current) {
+      clearTimeout(pcmIntervalRef.current);
+      pcmIntervalRef.current = null;
+    }
+    pcmStreamerRef.current?.stop();
+    setPcmPlaying(false);
+  };
+
+  const handlePCMPlayPause = () => {
+    if (pcmPlaying) {
+      handleStopPCM();
+    } else {
+      if (playing) {
+        player.pause();
+      }
+      handlePlayPCM();
     }
   };
 
@@ -441,6 +561,17 @@ export default function App() {
                 {playing ? '⏸️ Pause Audio' : '▶️ Play Audio'}
               </Text>
             </TouchableOpacity>
+
+            <View style={styles.divider} />
+            <Text style={styles.sectionTitle}>🔊 PCM Streamer Playback</Text>
+            <TouchableOpacity
+              style={[styles.playButton, pcmPlaying && styles.playingButton]}
+              onPress={handlePCMPlayPause}
+            >
+              <Text style={styles.buttonText}>
+                {pcmPlaying ? '⏹️ Stop PCM Stream' : '▶️ Play PCM Stream'}
+              </Text>
+            </TouchableOpacity>
           </View>
         )}
 
@@ -655,6 +786,17 @@ const styles = StyleSheet.create({
   },
   playingButton: {
     backgroundColor: '#D97706',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#334155',
+    marginVertical: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#94A3B8',
+    marginBottom: 12,
   },
   playerControlsContainer: {
     marginVertical: 12,
